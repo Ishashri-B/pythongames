@@ -1,0 +1,23 @@
+import pygame
+
+pygame.init()
+
+screen=pygame.display.set_mode((500,500))
+Ib=(250,300,50,130)
+I=pygame.draw.rect(screen,"hotpink",Ib)
+
+Is=(262,250,30,30)
+Ish=pygame.draw.rect(screen,"hotpink",Is)
+
+gameloop=True
+while gameloop:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            gameloop=False
+    
+    screen.fill("pink")
+    I=pygame.draw.rect(screen,"hotpink",Ib)
+    Ish=pygame.draw.rect(screen,"hotpink",Is)
+    pygame.display.flip()
+pygame.quit()
+    
