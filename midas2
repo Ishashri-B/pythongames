@@ -1,0 +1,68 @@
+import pygame
+
+pygame.init()
+
+
+screen=pygame.display.set_mode((600,600))
+pygame.display.set_caption("Midas’s Touch")
+
+MIDAS_SIZE=20
+OBJECT_SIZE=20
+
+head_x=600//2
+head_y=600//2
+
+midas_dx=0
+midas_dy=0
+
+
+speed=10
+
+FPS=25
+clock=pygame.time.Clock()
+
+objectposition=(500,500,OBJECT_SIZE,OBJECT_SIZE)
+object=pygame.draw.rect(screen,"red",objectposition)
+
+midasposition=(head_x,head_y,MIDAS_SIZE,MIDAS_SIZE)
+midas=pygame.draw.rect(screen,"yellow",midasposition)
+
+
+gameloop=True
+while gameloop:
+    for event in pygame.event.get():
+       
+        if event.type==pygame.QUIT:
+            gameloop=False
+    if event.type==pygame.KEYDOWN:
+        if event.key==pygame.K_RIGHT:
+            midas_dx=1*speed
+            midas_dy=0
+        elif event.key==pygame.K_LEFT:
+            midas_dx=-1*speed
+            midas_dy=0
+        elif event.key==pygame.K_UP:
+            midas_dx=0
+            midas_dy=-1*speed
+        elif event.key==pygame.K_DOWN:
+            midas_dx=0
+            midas_dy=1*speed
+        head_x=head_x+midas_dx
+        head_y=head_y+midas_dy
+        midasposition=(head_x,head_y,MIDAS_SIZE,MIDAS_SIZE)
+
+    if midas.colliderect(object):
+        object=pygame.draw.rect(screen,"yellow",objectposition)
+
+    screen.fill("black")
+    objectposition=(500,500,OBJECT_SIZE,OBJECT_SIZE)
+    object=pygame.draw.rect(screen,"red",objectposition)
+
+    
+    midas=pygame.draw.rect(screen,"yellow",midasposition)
+
+    pygame.display.flip()
+    clock.tick(FPS)
+pygame.quit()
+
+
