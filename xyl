@@ -1,0 +1,64 @@
+import pygame
+pygame.init()
+screen=pygame.display.set_mode((600,600))
+title=pygame.display.set_caption("Xylophone")
+mallotpositiony=(300)
+mallotpositionx=(300)
+mallot=pygame.draw.rect(screen,"white",(mallotpositionx,mallotpositiony,30,30))
+mallot_sound=pygame.mixer.Sound("xylophone-a-45818.mp3")
+
+
+FPS=20
+clock=pygame.time.Clock()
+gameloop=True
+rect1=pygame.draw.rect(screen,"red",(10,25,60,500))
+rect2=pygame.draw.rect(screen,"orange",(100,25,60,400))
+rect3=pygame.draw.rect(screen,"yellow",(190,25,60,300))
+rect4=pygame.draw.rect(screen,"green",(280,25,60,200))
+rect5=pygame.draw.rect(screen,"blue",(370,25,60,100))
+rect6=pygame.draw.rect(screen,"purple",(460,25,60,50))
+rect7=pygame.draw.rect(screen,"hotpink",(540,25,60,30))
+rect8=pygame.draw.rect(screen,"white",(630,25,60,20))
+while gameloop:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            gameloop=False
+    if event.type==pygame.KEYDOWN:
+        if event.key==pygame.K_LEFT:
+            mallotpositionx=mallotpositionx-10
+        if event.key==pygame.K_RIGHT:
+            mallotpositionx=mallotpositionx+10
+        if event.key==pygame.K_UP:
+            mallotpositiony=mallotpositiony-10
+        if event.key==pygame.K_DOWN:
+            mallotpositiony=mallotpositiony+10
+    mallotposition=(mallotpositionx,mallotpositiony,30,30)
+    if mallot.colliderect(rect1):
+        mallot_sound.play()
+    if mallot.colliderect(rect2):
+        mallot_sound.play()
+    if mallot.colliderect(rect3):
+        mallot_sound.play()
+    if mallot.colliderect(rect4):
+        mallot_sound.play()
+    if mallot.colliderect(rect5):
+        mallot_sound.play()
+    if mallot.colliderect(rect6):
+        mallot_sound.play()
+    if mallot.colliderect(rect7):
+            mallot_sound.play()
+    screen.fill("pink")
+    rect1=pygame.draw.rect(screen,"red",(10,25,60,500))
+    rect2=pygame.draw.rect(screen,"orange",(100,25,60,400))
+    rect3=pygame.draw.rect(screen,"yellow",(190,25,60,300))
+    rect4=pygame.draw.rect(screen,"green",(280,25,60,200))
+    rect5=pygame.draw.rect(screen,"blue",(370,25,60,100))
+    rect6=pygame.draw.rect(screen,"purple",(460,25,60,50))
+    rect7=pygame.draw.rect(screen,"hotpink",(540,25,50,30))
+    rect8=pygame.draw.rect(screen,"white",(630,25,50,20))
+    mallot=pygame.draw.rect(screen,"white",(mallotposition))
+    pygame.display.flip()
+    clock.tick(FPS)
+pygame.quit()
+
+
