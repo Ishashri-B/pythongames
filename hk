@@ -1,0 +1,78 @@
+import pygame
+import pymunk
+import pymunk.pygame_util
+
+#create pymunk space
+space=pymunk.Space()
+
+def create_ball(space):
+  #write the code to create ball object
+  body=pymunk.Body(1,pymunk.moment_for_circle(1,0,10))
+  body.position=(400,20)
+  shape=pymunk.Circle(body,10)
+  shape.elasticity=0.8
+  space.add(body,shape)
+  return body,shape
+ball_body,ball=create_ball(space)
+def create_ball2(space):
+    body2=pymunk.Body(1,pymunk.moment_for_circle(1,0,10))
+    body2.position=(200,30)
+    shape2=pymunk.Circle(body2,10)
+    shape2.elasticity=0.3
+    space.add(body2,shape2)
+    return body2,shape2
+ball_body,ball=create_ball2(space)
+def create_ball3(space):
+    body3=pymunk.Body(1,pymunk.moment_for_circle(1,0,10))
+    body3.position=(100,30)
+    shape3=pymunk.Circle(body3,10)
+    shape3.elasticity=0.5
+    space.add(body3,shape3)
+    return body3,shape3
+ball_body,ball=create_ball3(space)
+    
+def create_floor(space):
+    """Creates a static floor for the balls to bounce on."""
+    floor = pymunk.Segment(space.static_body, (50, 500), (750, 500), 5)
+    floor.elasticity = 1.0  # Maximum bounce
+    space.add(floor)
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Elasticity Demo")
+    clock = pygame.time.Clock()
+
+    #gravity to pull downward
+    space.gravity=(0,981)
+    
+
+    #Update physics simulation
+    draw_option=pymunk.pygame_util.DrawOptions(screen)
+   
+    # Create a floor
+    create_floor(space)
+
+    # Create balls with different elasticity
+    
+    running = True
+    while running:
+        screen.fill(("black"))  # Black background
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # Update physics simulation
+        space.step(1/60)
+        space.debug_draw(draw_option)
+        
+        # Draw objects
+        
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
