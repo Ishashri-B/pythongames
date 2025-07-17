@@ -1,0 +1,81 @@
+import pygame
+import pymunk
+import pymunk.pygame_util
+pygame.init()
+
+WIDTH=800
+LENGTH=600
+
+screen=pygame.display.set_mode((WIDTH,LENGTH))
+pygame.display.set_caption("Bouncy ball")
+gameloop=True
+
+FPS=60
+clock=pygame.time.Clock()
+space=pymunk.Space()
+space.gravity=(0,981)
+draw=pymunk.pygame_util.DrawOptions(screen)
+def create_ball(space):
+    body=pymunk.Body(1,pymunk.moment_for_circle(1,0,10))
+    body.position=(400,50)
+    shape=pymunk.Circle(body,10)
+    body.elasticity=0.5
+    space.add(body,shape)
+    return body,shape
+ball_body,ball=create_ball(space) 
+def create_paddle(space,angle):
+    body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
+    body.position = (400, 580)
+    shape = pymunk.Segment(body, (-100,0), (100,0), 10)  
+    shape.elasticity = 1
+    shape.body.angle=angle
+    shape.friction = 0.5
+    space.add(body, shape)
+    return body,shape
+paddle_body,paddle=create_paddle(space,angle=0) 
+ 
+
+score=0
+frame_count=0 
+font=pygame.font.SysFont("Comic Sans MS", 20)   
+
+g=font.render("Gameover",True,"red")    
+gg=g.get_rect(center=(400,300))
+
+gameover=False
+while gameloop:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            gameloop=False
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_RIGHT:
+                paddle_body.angle=paddle_body.angle+0.02
+            if event.key==pygame.K_LEFT:
+                paddle_body.angle=paddle_body.angle-0.02
+    screen.fill("black")
+    if not gameover:
+        frame_count=frame_count+1
+        if frame_count%60==0:  
+            score=score+1 
+        f=font.render("Score:"+str(score),True,"white")    
+        ff=f.get_rect(topleft=(10,10))
+        screen.blit(f,ff)
+    else:
+        screen.fill("black")
+        screen.blit(f,ff)
+        screen.blit(g,gg)
+        
+        pygame.display.update()
+        pygame.time.delay(3000)
+        gameloop=False
+    if ball_body.position.y>LENGTH:
+        gameover=True
+        
+        
+
+    
+    space.step(1/60)
+    space.debug_draw(draw)
+    pygame.display.flip()
+    clock.tick(FPS)
+pygame.quit()

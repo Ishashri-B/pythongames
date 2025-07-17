@@ -1,0 +1,120 @@
+import pygame
+import pymunk
+import pymunk.pygame_util
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Bowling Game")
+clock = pygame.time.Clock()
+running = True
+score = 0
+attempts = 3
+game_over = False
+
+space = pymunk.Space()
+space.gravity = (0, 900)
+
+bg_img = pygame.image.load("C:/Users/begou/Downloads/bowlingbg.jpg")
+ball_img =pygame.image.load("C:/Users/begou/Downloads/bowling_ball.png")
+pin_img = pygame.image.load("C:/Users/begou/Downloads/pin.png")
+bg_img=pygame.transform.scale(bg_img,(800,600))
+ball_img=pygame.transform.scale(ball_img,(50,50))
+pin_img=pygame.transform.scale(pin_img,(30,50))
+
+def create_ground():
+    body = pymunk.Body(body_type=pymunk.Body.STATIC)
+    shape = pymunk.Segment(body, (0, 580), (800, 580),5)
+    shape.friction = 1.0
+    space.add(body, shape)
+
+create_ground()
+
+def create_ball(x, y):
+    mass = 10
+    radius = 20
+    inertia = pymunk.moment_for_circle(mass, 0, radius)
+    body = pymunk.Body(mass, inertia)
+    body.position = x, y
+    shape = pymunk.Circle(body, radius)
+    shape.friction = 0.5
+    shape.elasticity = 0.8
+    space.add(body, shape)
+    return body, shape
+
+ball_body, ball_shape = create_ball(150, 500)
+
+def create_pin(x, y):
+    mass = 1
+    size = (20, 60)
+    moment = pymunk.moment_for_circle(mass, size)
+    body = pymunk.Body(mass, moment)
+    body.position = x, y
+    shape = pymunk.Poly.create_box(body, size)
+    shape.friction = 0.6
+    shape.elasticity = 0.4
+    space.add(body, shape)
+    return body, shape
+
+pins = []
+rows = [4, 3, 2, 1]
+start_x = 600
+start_y = 520
+dx = 30
+dy = 70
+
+for row_index, num_pins in enumerate(rows):
+    row_y = start_y - row_index * dy
+    row_start_x = start_x - ((num_pins - 1) * dx) / 2
+    for i in range(num_pins):
+        x = row_start_x + i * dx
+        y = row_y
+        pins.append(create_pin(x, y))
+
+def reset_ball():
+    ball_body.position = (150, 500)
+    ball_body.velocity = (0, 0)
+
+def draw_game():
+    screen.blit(bg_img, (0, 0))
+    screen.blit(ball_img, (ball_body.position.x - 20, ball_body.position.y - 20))
+    for body, _ in pins:
+        screen.blit(pin_img, (body.position.x - 10, body.position.y - 30))
+    font = pygame.font.SysFont(None, 36)
+    screen.blit(font.render(f"Score: {score}", True, (255, 255, 255)), (10, 10))
+    screen.blit(font.render(f"Attempts: {attempts}", True, (255, 255, 255)), (10, 50))
+    if game_over:
+        screen.blit(font.render("Game Over", True, (255, 50, 50)), (330, 250))
+
+def handle_click(pos):
+    global attempts, game_over
+    if attempts > 0 and not game_over:
+        reset_ball()
+        dx = pos[0] - ball_body.position.x
+        dy = pos[1] - ball_body.position.y
+        ball_body.velocity = (dx * 2, dy * 2)
+        attempts -= 1
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            handle_click(pygame.mouse.get_pos())
+
+    for pin in pins[:]:
+        if pin[0].position.y > 600:
+            pins.remove(pin)
+            space.remove(pin[0], pin[1])
+            score += 500
+
+    if attempts == 0 and not pins:
+        game_over = True
+    elif attempts == 0 and pins:
+        game_over = True
+
+    space.step(1 / 60.0)
+    draw_game()
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
