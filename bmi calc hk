@@ -1,0 +1,24 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+
+class Bmi(App):
+    def build(self):
+        layout=BoxLayout(orientation="vertical")
+
+        weight=TextInput(readonly=True, halign="left", font_size=30, text="Enter weight in kg")
+        layout.add_widget(weight)
+        height=TextInput(readonly=True, halign="left", font_size=30, text="Enter height in cm")
+        layout.add_widget(height)
+        calculatebmi=Button(text="Calculate Bmi")
+        layout.add_widget(calculatebmi)
+
+        label=Label(text="BMI: ", font_size=30, color=(1,1,1,1), size_hint=(1,0.2))
+        layout.add_widget(label)
+
+        return layout
+    
+if __name__=='__main__':
+    Bmi().run()

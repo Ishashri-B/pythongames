@@ -10,7 +10,7 @@ running = True
 score = 0
 attempts = 3
 game_over = False
-
+win=False
 space = pymunk.Space()
 space.gravity = (0, 900)
 
@@ -32,8 +32,8 @@ create_ground()
 def create_ball(x, y):
     mass = 10
     radius = 20
-    inertia = pymunk.moment_for_circle(mass, 0, radius)
-    body = pymunk.Body(mass, inertia)
+    circle = pymunk.moment_for_circle(mass, 0, radius)
+    body = pymunk.Body(mass, circle)
     body.position = x, y
     shape = pymunk.Circle(body, radius)
     shape.friction = 0.5
@@ -46,7 +46,7 @@ ball_body, ball_shape = create_ball(150, 500)
 def create_pin(x, y):
     mass = 1
     size = (20, 60)
-    moment = pymunk.moment_for_circle(mass, size)
+    moment = pymunk.moment_for_box(mass, size)
     body = pymunk.Body(mass, moment)
     body.position = x, y
     shape = pymunk.Poly.create_box(body, size)
@@ -84,7 +84,8 @@ def draw_game():
     screen.blit(font.render(f"Attempts: {attempts}", True, (255, 255, 255)), (10, 50))
     if game_over:
         screen.blit(font.render("Game Over", True, (255, 50, 50)), (330, 250))
-
+    if win:
+        screen.blit(font.render("You win", True, (50, 255, 50)), (330, 250))
 def handle_click(pos):
     global attempts, game_over
     if attempts > 0 and not game_over:
@@ -107,10 +108,10 @@ while running:
             space.remove(pin[0], pin[1])
             score += 500
 
-    if attempts == 0 and not pins:
+    if attempts == 0 and pins !=0:
         game_over = True
-    elif attempts == 0 and pins:
-        game_over = True
+    elif score==5000:
+        win=True
 
     space.step(1 / 60.0)
     draw_game()
