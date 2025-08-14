@@ -8,17 +8,40 @@ class Bmi(App):
     def build(self):
         layout=BoxLayout(orientation="vertical")
 
-        weight=TextInput(readonly=True, halign="left", font_size=30, text="Enter weight in kg")
-        layout.add_widget(weight)
-        height=TextInput(readonly=True, halign="left", font_size=30, text="Enter height in cm")
-        layout.add_widget(height)
-        calculatebmi=Button(text="Calculate Bmi")
+        self.weight=TextInput(readonly=False, halign="left", font_size=30, hint_text="Enter weight in kg")
+        layout.add_widget(self.weight)
+        self.height=TextInput(readonly=False, halign="left", font_size=30, hint_text="Enter height in cm")
+        layout.add_widget(self.height)
+        calculatebmi=Button(text="Calculate Bmi", on_press=self.calculate_bmi)
         layout.add_widget(calculatebmi)
 
-        label=Label(text="BMI: ", font_size=30, color=(1,1,1,1), size_hint=(1,0.2))
-        layout.add_widget(label)
+        self.label=Label(text="BMI: ", font_size=30, color=(1,1,1,1), size_hint=(1,0.2))
+        layout.add_widget(self.label)
 
         return layout
     
+    def calculate_bmi(self, instance):
+        try:
+            self.weight = float(self.weight.text)
+            self.height = float(self.height.text)
+            self.height = self.height / 100
+            bmi = self.weight / (self.height ** 2)
+            if bmi<18.5:
+                weight2="Underweight"
+            elif bmi>18.5 and bmi<24.9:
+                weight2="Healthy/Normal"
+            elif bmi>25 and bmi<29.9:
+                weight2="Overweight"
+            elif bmi>30:
+                weight2="Obese"
+        
+            self.label.text = f"BMI: {bmi:.2f},{weight2}"
+           
+        except:
+            self.label.text = "Error"
+
+                            
+
+           
 if __name__=='__main__':
     Bmi().run()
