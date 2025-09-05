@@ -1,0 +1,118 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.checkbox import CheckBox
+from kivy.uix.button import Button
+
+class QuizApp(App):
+    def build(self):
+        box = BoxLayout(orientation="vertical", padding=20, spacing=10)
+
+        
+        box.add_widget(Label(text="1. What is the capital of France?"))
+
+        ques1 = BoxLayout(orientation="horizontal")
+        self.check1 = CheckBox()
+        ques1.add_widget(self.check1)
+        ques1.add_widget(Label(text="London"))
+        box.add_widget(ques1)
+
+        ques2 = BoxLayout(orientation="horizontal")
+        self.check2 = CheckBox()
+        ques2.add_widget(self.check2)
+        ques2.add_widget(Label(text="Berlin"))
+        box.add_widget(ques2)
+
+        ques3 = BoxLayout(orientation="horizontal")
+        self.check3 = CheckBox()
+        ques3.add_widget(self.check3)
+        ques3.add_widget(Label(text="Paris"))  
+        box.add_widget(ques3)
+
+        ques4 = BoxLayout(orientation="horizontal")
+        self.check4 = CheckBox()
+        ques4.add_widget(self.check4)
+        ques4.add_widget(Label(text="Marseille"))
+        box.add_widget(ques4)
+
+       
+        box.add_widget(Label(text="2. Which is the largest planet?"))
+
+        ques5 = BoxLayout(orientation="horizontal")
+        self.check5 = CheckBox()
+        ques5.add_widget(self.check5)
+        ques5.add_widget(Label(text="Earth"))
+        box.add_widget(ques5)
+
+        ques6 = BoxLayout(orientation="horizontal")
+        self.check6 = CheckBox()
+        ques6.add_widget(self.check6)
+        ques6.add_widget(Label(text="Mars"))
+        box.add_widget(ques6)
+
+        ques7 = BoxLayout(orientation="horizontal")
+        self.check7 = CheckBox()
+        ques7.add_widget(self.check7)
+        ques7.add_widget(Label(text="Jupiter"))  
+        box.add_widget(ques7)
+
+        ques8 = BoxLayout(orientation="horizontal")
+        self.check8 = CheckBox()
+        ques8.add_widget(self.check8)
+        ques8.add_widget(Label(text="Venus"))
+        box.add_widget(ques8)
+
+       
+        box.add_widget(Label(text="3. What is 5 * 6?"))
+
+        ques9 = BoxLayout(orientation="horizontal")
+        self.check9 = CheckBox()
+        ques9.add_widget(self.check9)
+        ques9.add_widget(Label(text="25"))
+        box.add_widget(ques9)
+
+        ques10 = BoxLayout(orientation="horizontal")
+        self.check10 = CheckBox()
+        ques10.add_widget(self.check10)
+        ques10.add_widget(Label(text="30")) 
+        box.add_widget(ques10)
+
+        ques11 = BoxLayout(orientation="horizontal")
+        self.check11 = CheckBox()
+        ques11.add_widget(self.check11)
+        ques11.add_widget(Label(text="35"))
+        box.add_widget(ques11)
+
+        ques12 = BoxLayout(orientation="horizontal")
+        self.check12 = CheckBox()
+        ques12.add_widget(self.check12)
+        ques12.add_widget(Label(text="40"))
+        box.add_widget(ques12)
+
+        # Submit button
+        submit_btn = Button(text="Submit", size_hint=(1, 0.2))
+        submit_btn.bind(on_press=self.check_answers)
+        box.add_widget(submit_btn)
+
+        # Result label
+        self.result = Label(text="")
+        box.add_widget(self.result)
+
+        return box
+
+    def check_answers(self, instance):
+        self.score = 0
+
+        
+        if self.check3.active and not (self.check1.active or self.check2.active or self.check4.active):
+            self.score += 1
+        if self.check7.active and not (self.check5.active or self.check6.active or self.check8.active):
+            self.score += 1
+        if self.check10.active and not (self.check9.active or self.check11.active or self.check12.active):
+            self.score += 1
+
+        self.result.text = f"Your Score: {self.score}/3"
+
+
+if __name__ == "__main__":
+    QuizApp().run()
