@@ -89,12 +89,12 @@ class QuizApp(App):
         ques12.add_widget(Label(text="40"))
         box.add_widget(ques12)
 
-        # Submit button
+        
         submit_btn = Button(text="Submit", size_hint=(1, 0.2))
         submit_btn.bind(on_press=self.check_answers)
         box.add_widget(submit_btn)
 
-        # Result label
+        
         self.result = Label(text="")
         box.add_widget(self.result)
 
@@ -115,4 +115,5 @@ class QuizApp(App):
 
 
 if __name__ == "__main__":
+
     QuizApp().run()
