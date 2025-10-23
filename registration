@@ -1,0 +1,172 @@
+
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.spinner import Spinner
+from kivy.uix.checkbox import CheckBox
+from kivy.uix.button import Button
+from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
+from kivy.core.window import Window
+from kivy.uix.scrollview import ScrollView
+
+class registration(App):
+    def build(self):
+
+        self.root_panel=TabbedPanel(do_default_tab=False)
+        self.root_panel.tab_width=Window.width/2
+
+        reg_tab=TabbedPanelItem(text="Student Registriation")
+        self.form_layout=self.build_form_screen()
+        reg_tab.add_widget(self.form_layout)
+        self.root_panel.add_widget(reg_tab)
+
+        view_tab=TabbedPanelItem(text="View students")
+        self.view_layout=self.build_view_screen()
+        view_tab.add_widget(self.view_layout)
+        self.root_panel.add_widget(view_tab)
+
+        return self.root_panel
+    
+    def build_view_screen(self):
+       v=BoxLayout(orientation="vertical")
+       refresh_btn=Button(text="Refresh Button",size_hint_y=None,height=50)
+       refresh_btn.bind(on_press=self.load_students)
+       self.scroll=ScrollView(bar_width=30)
+       self.cards_container=BoxLayout(orientation="vertical", size_hint_y=None,padding=10,spacing= 10)
+       self.cards_container.bind(minimum_height=self.cards_container.setter("height"))
+       self.scroll.add_widget(self.cards_container)
+
+       v.add_widget(refresh_btn)
+       v.add_widget(self.scroll)
+       self.load_students()
+       return v
+
+
+    def build_form_screen(self):
+        vl=BoxLayout(orientation="vertical")
+    
+
+        box=BoxLayout(orientation="vertical",padding=20,spacing=10,)
+        grid=GridLayout(cols=2,spacing=10,row_default_height=40,row_force_default=True)
+        grid2=GridLayout(cols=2,spacing=5,row_default_height=40,row_force_default=True)
+       
+        
+
+        question=Label(text="Select Subjects:")
+        
+        self.math = CheckBox()
+        grid2.add_widget(self.math)
+        mathlabel=Label(text="Math")
+        grid2.add_widget(mathlabel)
+
+        self.ela = CheckBox()
+        grid2.add_widget(self.ela)
+        elalabel=Label(text="Ela")
+        grid2.add_widget(elalabel)
+
+        self.science = CheckBox()
+        grid2.add_widget(self.science)
+        sciencelabel=Label(text="Science")
+        grid2.add_widget(sciencelabel)
+
+        self.history = CheckBox()
+        grid2.add_widget(self.history)
+        historylabel=Label(text="History")
+        grid2.add_widget(historylabel)
+
+        submit=Button(text="Submit", size_hint_y=None, height=20,on_press=self.submit_data)
+     
+        self.status_label=Label(text="",size_hint_y=None, height=40)
+      
+
+        labelname=Label(text="Name")
+        self.textname=TextInput(multiline=False)
+        grid.add_widget(labelname)
+        grid.add_widget(self.textname)
+        labelage=Label(text="Age")
+        self.textage=TextInput(multiline=False,input_filter="int")  
+        labelgender=Label(text="Gender")
+        self.gender=Spinner(text="Select your gender",values=["Male","Female"])
+        labelgrade=Label(text="Grade")
+        self.textgrade=TextInput(multiline=False,input_filter="int")
+        labeladress=Label(text="Address")
+        self.textadress=TextInput(multiline=False)
+
+        grid.add_widget(labelage)
+        grid.add_widget(self.textage)
+        grid.add_widget(labelgender)
+        grid.add_widget(self.gender)
+        grid.add_widget(labelgrade)
+        grid.add_widget(self.textgrade)
+        grid.add_widget(labeladress)
+        grid.add_widget(self.textadress)
+        box.add_widget(grid)
+        box.add_widget(question)
+        box.add_widget(grid2)
+        box.add_widget(submit)
+        box.add_widget(self.status_label)
+
+        
+       
+        return box
+    def submit_data(self,instance):
+        name=self.textname.text
+        age=self.textage.text
+        grade=self.textgrade.text
+        gendertext=self.gender.text
+        adress=self.textadress
+        selected_subjects=[]
+        if self.math.active:
+            selected_subjects.append("math")
+        if self.science.active:
+            selected_subjects.append("science")
+        if self.history.active:
+            selected_subjects.append("history")
+        if self.ela.active:
+            selected_subjects.append("ela")
+        if not name or not age or not grade or not adress or not selected_subjects or gendertext=="select":
+            self.status_label.text="Please fill in all the fields"
+        else:
+            try:
+                with open("students.txt","a") as f:
+                    line= f"{name},{age},{grade},{adress},(','.join,{selected_subjects}),{gendertext}\n"
+                    f.write(line)
+                self.status_label.text=f"Thank you {name}, your data was saved"
+            except:
+                self.status_label.text="Error"
+
+    def create_student_card(self,line):
+        name, age, gender, grade, adress,subjects=line.strip().split(",",5)
+        card=BoxLayout(orientation="vertical",padding=10,height=40)
+        card.add_widget(Label(text=f"Name={name}"))
+        card.add_widget(Label(text=f"Age={age},Gender={gender}"))
+        card.add_widget(Label(f"Grade={grade}"))
+        card.add_widget(Label(text=f"Adress={adress}"))
+        card.add_widget(Label(text=f"Subjects={subjects}"))
+
+        return card
+    
+    def load_students(self,instance=None):
+        self.cards_container.clear_widgets()
+
+        try:
+            with open("students.txt", "r") as f:
+                for line in f:
+                    card=self.create_student_card(line)
+                    self.cards_container.add_widget(card)
+        except:
+            self.cards_container.add_widget(Label(text="No data collected"))
+
+        
+
+    
+
+
+       
+if __name__=="__main__":
+    registration().run()
+    
+
+
